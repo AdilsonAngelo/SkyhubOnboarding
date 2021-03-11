@@ -1,6 +1,7 @@
 class Product
   include Mongoid::Document
   include Mongoid::Timestamps
+
   validates_presence_of :sku, :price, :name, :description, :amount
   validates_uniqueness_of :sku
 

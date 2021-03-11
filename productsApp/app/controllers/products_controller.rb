@@ -4,6 +4,7 @@ class ProductsController < ApplicationController
   # GET /products
   def index
     @products = Product.order(created_at: :desc)
+  
     render template: "products/index.html.erb"
   end
 

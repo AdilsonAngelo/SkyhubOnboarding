@@ -5,6 +5,7 @@ class Api::ProductsController < ApplicationController
   # GET /products.json
   def index
     @products = Product.order(created_at: :desc)
+  
     respond_to do |format|
       format.json { render json: @products.map(&:to_api) }
       format.xml { render xml: @products.map(&:to_api) }
@@ -54,6 +55,7 @@ class Api::ProductsController < ApplicationController
   # DELETE /products/1.json
   def destroy
     @product.destroy
+  
     respond_to do |format|
       format.xml { head :no_content }
       format.json { head :no_content }
