@@ -20,9 +20,11 @@ RUN cd ruby-2.3.0 \
 
 RUN gem install bundler -v 1.17.3
 
-COPY . .
+COPY Gemfile* ./
 
 RUN bundle _1.17.3_ install
+
+COPY . .
 
 EXPOSE 3000
 

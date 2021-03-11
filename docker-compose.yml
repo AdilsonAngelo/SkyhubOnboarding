@@ -14,6 +14,6 @@ services:
     image: mongo:3.4-xenial
     restart: always
     volumes:
-      - ./productsApp/db/data:/data/db
+      - ./db/data:/data/db
     ports:
       - "27017:27017"
