@@ -20,7 +20,7 @@ defmodule ProductsApi.MixProject do
   def application do
     [
       mod: {ProductsApi.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto]
     ]
   end
 
@@ -35,8 +35,8 @@ defmodule ProductsApi.MixProject do
     [
       {:phoenix, "~> 1.5.0"},
       {:phoenix_ecto, "~> 4.1"},
-      {:ecto_sql, "~> 3.4"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto, "~> 2.1.6", override: true},
+      {:mongodb_ecto, github: "michalmuskala/mongodb_ecto", branch: "ecto-2"},
       {:phoenix_live_dashboard, "~> 0.2.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},

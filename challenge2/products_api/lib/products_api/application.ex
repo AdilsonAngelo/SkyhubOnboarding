@@ -6,9 +6,10 @@ defmodule ProductsApi.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
     children = [
       # Start the Ecto repository
-      ProductsApi.Repo,
+      supervisor(ProductsApi.Repo, []),
       # Start the Telemetry supervisor
       ProductsApiWeb.Telemetry,
       # Start the PubSub system

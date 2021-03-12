@@ -2,10 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :products_api, ProductsApi.Repo,
-  username: "postgres",
-  password: "postgres",
   database: "products_api_dev",
-  hostname: "localhost",
+  hostname: "mongo",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

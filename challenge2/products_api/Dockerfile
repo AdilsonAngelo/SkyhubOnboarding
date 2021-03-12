@@ -11,8 +11,6 @@ RUN mix deps.get
 
 COPY . /app
 
-RUN mix ecto.create
-
-# RUN mix do compile
+RUN mix do compile
 
 CMD ["mix", "phx.server"]

@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  phoenix:
+    build: products_api
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+    volumes:
+      - ./products_api:/app
+  mongo:
+    image: mongo:3.4
+    restart: always
+    environment:
+      MONGO_INITDB_DATABASE: products_api_dev
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo/data/db:/data/db
