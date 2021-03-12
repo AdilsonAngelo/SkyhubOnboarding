@@ -2,18 +2,18 @@ version: '3'
 
 services:
   phoenix:
-    build: products_api
+    build: phx_project
     ports:
       - 4000:4000
     depends_on:
       - mongo
     volumes:
-      - ./products_api:/app
+      - ./phx_project:/app
   mongo:
     image: mongo:3.4
     restart: always
     environment:
-      MONGO_INITDB_DATABASE: products_api_dev
+      MONGO_INITDB_DATABASE: phx_project_dev
     #   MONGO_INITDB_ROOT_USERNAME: root
     #   MONGO_INITDB_ROOT_PASSWORD: rootpassword
     ports:
