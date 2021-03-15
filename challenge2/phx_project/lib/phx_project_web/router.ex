@@ -7,6 +7,7 @@ defmodule PhxProjectWeb.Router do
 
   scope "/api", PhxProjectWeb do
     pipe_through :api
+    resources "/products", ProductController
   end
 
   # Enables LiveDashboard only for development
