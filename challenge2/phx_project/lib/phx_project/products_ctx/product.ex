@@ -27,20 +27,15 @@ defmodule PhxProject.ProductsCtx.Product do
     |> validate_sku_unique
   end
 
+  @spec validate_sku_unique(Ecto.Changeset.t()) :: Ecto.Changeset.t()
   def validate_sku_unique(changeset) do
-    case changeset.valid? do
-      true ->
-        changeset
-        |> validate_change(:sku, fn :sku, val ->
-          if ProductsCtx.sku_exists?(val) do
-            [sku: "sku already exists"]
-          else
-            []
-          end
-        end)
-
-      _ ->
-        changeset
-    end
+      changeset
+      |> validate_change(:sku, fn :sku, val ->
+        if ProductsCtx.sku_exists?(val) do
+          [sku: "sku already exists"]
+        else
+          []
+        end
+      end)
   end
 end
