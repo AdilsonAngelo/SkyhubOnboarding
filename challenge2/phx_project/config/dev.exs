@@ -15,7 +15,7 @@ config :phx_project, PhxProject.Repo,
 # with webpack to recompile .js and .css sources.
 config :phx_project, PhxProjectWeb.Endpoint,
   http: [port: 4000],
-  debug_errors: true,
+  debug_errors: false,
   code_reloader: true,
   check_origin: false,
   watchers: [
