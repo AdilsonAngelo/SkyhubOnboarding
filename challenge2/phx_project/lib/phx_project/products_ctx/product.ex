@@ -19,5 +19,6 @@ defmodule PhxProject.ProductsCtx.Product do
     product
     |> cast(attrs, [:sku, :price, :name, :description, :amount])
     |> validate_required([:sku, :price, :name, :description, :amount])
+    |> validate_number(:price, greater_than: 0)
   end
 end
