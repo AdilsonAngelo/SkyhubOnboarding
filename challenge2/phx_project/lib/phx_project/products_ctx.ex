@@ -101,4 +101,26 @@ defmodule PhxProject.ProductsCtx do
   def change_product(%Product{} = product, attrs \\ %{}) do
     Product.changeset(product, attrs)
   end
+
+  @spec sku_exists?(String.t()) :: boolean()
+  @doc """
+
+  Returns `true` if there is a product with given `sku` and `false` otherwise.
+
+  ## Examples
+
+      iex> sku_exists?("AB23CF")
+      true
+      iex> sku_exists?("CD45ED")
+      false
+  """
+  def sku_exists?(sku) do
+    query = from p in Product,
+            select: count(p.id, :distinct),
+            where: p.sku == ^sku
+    case Repo.one(query) do
+      nil -> false
+      1 -> true
+    end
+  end
 end
