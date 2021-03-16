@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  phoenix:
+    build: phx_project
+    ports:
+      - 4000:4000
+    depends_on:
+      - mongo
+    volumes:
+      - ./phx_project:/app
+  mongo:
+    image: mongo:3.4
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo/data/db:/data/db
