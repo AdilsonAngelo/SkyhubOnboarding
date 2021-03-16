@@ -33,6 +33,13 @@ defmodule PhxProjectWeb.ProductController do
     end
   end
 
+  def update(conn, %{"id" => _id}) do
+    conn
+    |> put_status(:unprocessable_entity)
+    |> put_view(PhxProjectWeb.ErrorView)
+    |> render(:"422")
+  end
+
   def delete(conn, %{"id" => id}) do
     product = ProductsCtx.get_product!(id)
 
