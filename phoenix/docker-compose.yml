@@ -7,6 +7,7 @@ services:
       - 4000:4000
     depends_on:
       - mongo
+      - redis
     volumes:
       - ./phx_project:/app
   mongo:
@@ -16,3 +17,9 @@ services:
       - 27017:27017
     volumes:
       - ./mongo/data/db:/data/db
+  redis:
+    image: redis:6
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server
