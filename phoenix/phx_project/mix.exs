@@ -20,7 +20,7 @@ defmodule PhxProject.MixProject do
   def application do
     [
       mod: {PhxProject.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto]
+      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs]
     ]
   end
 
@@ -44,7 +44,8 @@ defmodule PhxProject.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:exredis, "~> 0.3.0"},
-      {:poison, "~> 3.0"}
+      {:poison, "~> 3.0"},
+      {:tirexs, "~> 0.8"}
     ]
   end
 

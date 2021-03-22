@@ -15,6 +15,9 @@ config :exredis,
   reconnect: :no_reconnect,
   max_queue: :infinity
 
+
+config :tirexs, :uri, "http://elasticsearch:9200"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
