@@ -9,12 +9,11 @@ defmodule PhxProjectWeb.ProductController do
 
   def index(conn, _params) do
     products = ProductsCtx.list_products()
-    conn
-    |> render("index.json", products: products)
+    render(conn, "index.json", products: products)
   end
 
   def create(conn, product_params) do
-    with {:ok, %Product{} = product} <- ProductData.create(product_params) do
+    with {:ok, product} <- ProductData.create(product_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.product_path(conn, :show, product))

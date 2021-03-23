@@ -12,9 +12,8 @@ defmodule PhxProject.Utils.RedisHelper do
       :undefined ->
         :undefined
       value ->
-        struct = Poison.decode!(value, as: type)
         Exredis.Api.expire(id, ttl)
-        struct
+        Poison.decode!(value, as: type)
     end
   end
 
