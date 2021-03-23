@@ -1,7 +1,4 @@
 defmodule PhxProjectWeb.FallbackController do
-  alias PhxProject.Utils.ESHelper
-
-  @es_index :errors
   @moduledoc """
   Translates controller action results into valid `Plug.Conn` responses.
 
@@ -14,7 +11,6 @@ defmodule PhxProjectWeb.FallbackController do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(PhxProjectWeb.ChangesetView)
-    |> register_before_send(&error_before_send/1)
     |> render("error.json", changeset: changeset)
   end
 
@@ -23,9 +19,6 @@ defmodule PhxProjectWeb.FallbackController do
     conn
     |> put_status(:not_found)
     |> put_view(PhxProjectWeb.ErrorView)
-    |> register_before_send(&error_before_send/1)
     |> render(:"404")
   end
-
-  def error_before_send(conn), do: ESHelper.to_es_before_send(conn, @es_index)
 end

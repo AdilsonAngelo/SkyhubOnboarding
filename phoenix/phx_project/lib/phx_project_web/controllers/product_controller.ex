@@ -4,16 +4,12 @@ defmodule PhxProjectWeb.ProductController do
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
-  alias PhxProject.Utils.ESHelper
 
   action_fallback PhxProjectWeb.FallbackController
-
-  @es_index :products
 
   def index(conn, _params) do
     products = ProductsCtx.list_products()
     conn
-    |> register_before_send(&products_before_send/1)
     |> render("index.json", products: products)
   end
 
@@ -22,21 +18,18 @@ defmodule PhxProjectWeb.ProductController do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.product_path(conn, :show, product))
-      |> register_before_send(&products_before_send/1)
       |> render("show.json", product: product)
     end
   end
 
   def show(conn, %{"id" => id}) do
     conn
-    |> register_before_send(&products_before_send/1)
     |> render("show.json", product: ProductData.get(id))
   end
 
   def update(conn, %{"id" => id, "product" => product_params}) do
     with {:ok, %Product{} = product} <- ProductData.update(id, product_params) do
       conn
-      |> register_before_send(&products_before_send/1)
       |> render("show.json", product: product)
     end
   end
@@ -45,17 +38,13 @@ defmodule PhxProjectWeb.ProductController do
     conn
     |> put_status(:unprocessable_entity)
     |> put_view(PhxProjectWeb.ErrorView)
-    |> register_before_send(&products_before_send/1)
     |> render(:"422")
   end
 
   def delete(conn, %{"id" => id}) do
     with {:ok, %Product{}} <- ProductData.delete(id) do
       conn
-      |> register_before_send(&products_before_send/1)
       |> send_resp(:no_content, "")
     end
   end
-
-  def products_before_send(conn), do: ESHelper.to_es_before_send(conn, @es_index)
 end

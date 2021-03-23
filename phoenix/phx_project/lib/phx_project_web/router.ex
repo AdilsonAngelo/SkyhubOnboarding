@@ -1,8 +1,19 @@
 defmodule PhxProjectWeb.Router do
   use PhxProjectWeb, :router
+  use Plug.ErrorHandler
+
+  alias PhxProject.Utils.ESHelper
+
+  def handle_errors(%Plug.Conn{} = conn, %{kind: _kind, reason: reason, stack: stack}) do
+    response = %{reason: reason.message, stack: Exception.format_stacktrace(stack)}
+    conn
+    |> register_before_send(&error_before_send/1)
+    |> send_resp(conn.status, Poison.encode!(response))
+  end
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug PhxProjectWeb.Plugs.ProductsPlug
   end
 
   scope "/api", PhxProjectWeb do
@@ -25,4 +36,6 @@ defmodule PhxProjectWeb.Router do
       live_dashboard "/dashboard", metrics: PhxProjectWeb.Telemetry
     end
   end
+
+  def error_before_send(conn), do: ESHelper.to_es_before_send(conn, :errors)
 end
