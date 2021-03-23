@@ -3,7 +3,7 @@ defmodule PhxProject.ProductsCtx.Product do
   import Ecto.Changeset
 
   alias PhxProject.ProductsCtx
-
+  @derive {Poison.Encoder, only: [:id, :sku, :price, :name, :description, :amount]}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "products" do

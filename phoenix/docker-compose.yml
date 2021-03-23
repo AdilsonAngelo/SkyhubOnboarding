@@ -7,6 +7,8 @@ services:
       - 4000:4000
     depends_on:
       - mongo
+      - redis
+      - elasticsearch
     volumes:
       - ./phx_project:/app
   mongo:
@@ -16,3 +18,38 @@ services:
       - 27017:27017
     volumes:
       - ./mongo/data/db:/data/db
+  redis:
+    image: redis:6
+    restart: always
+    ports:
+      - 6379:6379
+    command: redis-server
+  elasticsearch:
+    image: elasticsearch:7.11.2
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  kibana:
+    image: kibana:7.11.2
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+volumes:
+  esdata:
+    driver: local

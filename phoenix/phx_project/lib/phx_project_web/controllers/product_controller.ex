@@ -3,6 +3,7 @@ defmodule PhxProjectWeb.ProductController do
 
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
+  alias PhxProject.ProductsCtx.ProductData
 
   action_fallback PhxProjectWeb.FallbackController
 
@@ -12,7 +13,7 @@ defmodule PhxProjectWeb.ProductController do
   end
 
   def create(conn, product_params) do
-    with {:ok, %Product{} = product} <- ProductsCtx.create_product(product_params) do
+    with {:ok, product} <- ProductData.create(product_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.product_path(conn, :show, product))
@@ -21,15 +22,14 @@ defmodule PhxProjectWeb.ProductController do
   end
 
   def show(conn, %{"id" => id}) do
-    product = ProductsCtx.get_product!(id)
-    render(conn, "show.json", product: product)
+    conn
+    |> render("show.json", product: ProductData.get(id))
   end
 
   def update(conn, %{"id" => id, "product" => product_params}) do
-    product = ProductsCtx.get_product!(id)
-
-    with {:ok, %Product{} = product} <- ProductsCtx.update_product(product, product_params) do
-      render(conn, "show.json", product: product)
+    with {:ok, %Product{} = product} <- ProductData.update(id, product_params) do
+      conn
+      |> render("show.json", product: product)
     end
   end
 
@@ -41,10 +41,9 @@ defmodule PhxProjectWeb.ProductController do
   end
 
   def delete(conn, %{"id" => id}) do
-    product = ProductsCtx.get_product!(id)
-
-    with {:ok, %Product{}} <- ProductsCtx.delete_product(product) do
-      send_resp(conn, :no_content, "")
+    with {:ok, %Product{}} <- ProductData.delete(id) do
+      conn
+      |> send_resp(:no_content, "")
     end
   end
 end
