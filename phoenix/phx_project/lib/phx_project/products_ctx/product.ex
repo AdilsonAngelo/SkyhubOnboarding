@@ -2,8 +2,12 @@ defmodule PhxProject.ProductsCtx.Product do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @required_attrs [:sku, :name, :description, :barcode]
+  @other_attrs [:price, :amount]
+  @all_attrs @required_attrs ++ @other_attrs
+
   alias PhxProject.ProductsCtx
-  @derive {Poison.Encoder, only: [:id, :sku, :price, :name, :description, :amount]}
+  @derive {Poison.Encoder, only: [:id | @all_attrs]}
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "products" do
@@ -12,30 +16,30 @@ defmodule PhxProject.ProductsCtx.Product do
     field :name, :string
     field :price, :float
     field :sku, :string
+    field :barcode, :string
 
     timestamps()
   end
 
-  @doc false
   def changeset(product, attrs) do
     product
-    |> cast(attrs, [:sku, :price, :name, :description, :amount])
-    |> validate_required([:sku, :price, :name, :description, :amount])
+    |> cast(attrs, @all_attrs)
+    |> validate_required(@required_attrs)
     |> validate_number(:price, greater_than: 0)
     |> validate_number(:amount, greater_than_or_equal_to: 0)
-    |> validate_format(:sku, ~r/^[A-Z\d]{6}$/)
-    |> validate_sku_unique
+    |> validate_format(:sku, ~r/^[A-Z\d]{6}$/i)
+    |> validate_format(:barcode, ~r/\d{8,13}/)
+    |> validate_unique(:sku)
+    |> validate_unique(:barcode)
   end
 
-  @spec validate_sku_unique(Ecto.Changeset.t()) :: Ecto.Changeset.t()
-  def validate_sku_unique(changeset) do
-      changeset
-      |> validate_change(:sku, fn :sku, val ->
-        if ProductsCtx.sku_exists?(val) do
-          [sku: "sku already exists"]
-        else
-          []
-        end
-      end)
+  def validate_unique(changeset, attr) do
+    validate_change(changeset, attr, fn attr, val ->
+      if ProductsCtx.attribute_value_exists?(attr, val) do
+        [{attr, "#{attr} already exists"}]
+      else
+        []
+      end
+    end)
   end
 end
