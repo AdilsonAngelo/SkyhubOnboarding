@@ -5,10 +5,30 @@ defmodule PhxProject.ProductsCtxTest do
 
   describe "products" do
     alias PhxProject.ProductsCtx.Product
-
-    @valid_attrs %{amount: 42, description: "some description", name: "some name", price: 120.5, sku: "some sku"}
-    @update_attrs %{amount: 43, description: "some updated description", name: "some updated name", price: 456.7, sku: "some updated sku"}
-    @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
+    @valid_attrs %{
+      sku: "AA-111",
+      name: "foo",
+      barcode: "00100100",
+      description: nil,
+      price: 120.5,
+      amount: nil
+    }
+    @update_attrs %{
+      sku: "A1B234",
+      name: "Foo",
+      barcode: "00200200200",
+      description: "Bar",
+      price: 456.7,
+      amount: 43,
+    }
+    @invalid_attrs %{
+      sku: "Invalid Format",
+      name: nil,
+      barcode: "Not Numbers",
+      description: 123,
+      price: 0,
+      amount: -1,
+    }
 
     def product_fixture(attrs \\ %{}) do
       {:ok, product} =
@@ -31,11 +51,12 @@ defmodule PhxProject.ProductsCtxTest do
 
     test "create_product/1 with valid data creates a product" do
       assert {:ok, %Product{} = product} = ProductsCtx.create_product(@valid_attrs)
-      assert product.amount == 42
-      assert product.description == "some description"
-      assert product.name == "some name"
+      assert product.sku == "AA-111"
+      assert product.name == "foo"
+      assert product.barcode == "00100100"
+      assert product.description == nil
       assert product.price == 120.5
-      assert product.sku == "some sku"
+      assert product.amount == nil
     end
 
     test "create_product/1 with invalid data returns error changeset" do
@@ -45,11 +66,12 @@ defmodule PhxProject.ProductsCtxTest do
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = ProductsCtx.update_product(product, @update_attrs)
-      assert product.amount == 43
-      assert product.description == "some updated description"
-      assert product.name == "some updated name"
+      assert product.sku == "A1B234"
+      assert product.name == "Foo"
+      assert product.barcode == "00200200200"
+      assert product.description == "Bar"
       assert product.price == 456.7
-      assert product.sku == "some updated sku"
+      assert product.amount == 43
     end
 
     test "update_product/2 with invalid data returns error changeset" do
