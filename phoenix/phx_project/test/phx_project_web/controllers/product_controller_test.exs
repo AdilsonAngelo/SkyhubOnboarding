@@ -64,8 +64,17 @@ defmodule PhxProjectWeb.ProductControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      conn = post(conn, Routes.product_path(conn, :create), @invalid_attrs)
+
+      assert %{"errors" => %{
+          "amount" => ["must be greater than or equal to 0"],
+          "barcode" => ["has invalid format"],
+          "description" => ["is invalid"],
+          "name" => ["can't be blank"],
+          "price" => ["must be greater than 0"],
+          "sku" => ["has invalid format"]
+        }
+      } == json_response(conn, 422)
     end
   end
 
