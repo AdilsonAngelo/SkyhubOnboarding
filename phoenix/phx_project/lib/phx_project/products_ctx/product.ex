@@ -2,8 +2,8 @@ defmodule PhxProject.ProductsCtx.Product do
   use Ecto.Schema
   import Ecto.Changeset
 
-  @required_attrs [:sku, :name, :description, :barcode]
-  @other_attrs [:price, :amount]
+  @required_attrs [:sku, :name, :barcode]
+  @other_attrs [:description, :price, :amount]
   @all_attrs @required_attrs ++ @other_attrs
 
   alias PhxProject.ProductsCtx
