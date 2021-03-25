@@ -40,8 +40,15 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
   describe "index" do
     test "lists all products", %{conn: conn} do
+      %{product: %{id: id}} = create_product(nil)
+
+      product =
+        Map.merge(@create_attrs, %{id: id})
+        |> Enum.map(fn {k, v} -> {Atom.to_string(k), v} end)
+        |> Enum.into(%{})
+
       conn = get(conn, Routes.product_path(conn, :index))
-      assert json_response(conn, 200) == []
+      assert json_response(conn, 200) == [product]
     end
   end
 
