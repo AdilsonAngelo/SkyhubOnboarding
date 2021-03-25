@@ -66,26 +66,24 @@ defmodule PhxProjectWeb.ProductControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.product_path(conn, :create), @invalid_attrs)
 
-      assert %{"errors" => %{
-          "amount" => ["must be greater than or equal to 0"],
-          "barcode" => ["has invalid format"],
-          "description" => ["is invalid"],
-          "name" => ["can't be blank"],
-          "price" => ["must be greater than 0"],
-          "sku" => ["has invalid format"]
-        }
-      } == json_response(conn, 422)
+      assert %{
+        "amount" => ["must be greater than or equal to 0"],
+        "barcode" => ["has invalid format"],
+        "description" => ["is invalid"],
+        "name" => ["can't be blank"],
+        "price" => ["must be greater than 0"],
+        "sku" => ["has invalid format"]
+      } == json_response(conn, 422)["errors"]
     end
 
     test "renders errors when sku or barcode already exists", %{conn: conn} do
       fixture(:product)
       conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
 
-      assert %{"errors" => %{
-          "barcode" => ["barcode already exists"],
-          "sku" => ["sku already exists"]
-        }
-      } == json_response(conn, 422)
+      assert %{
+        "barcode" => ["barcode already exists"],
+        "sku" => ["sku already exists"]
+      } == json_response(conn, 422)["errors"]
     end
   end
 
@@ -110,7 +108,14 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn, product: product} do
       conn = put(conn, Routes.product_path(conn, :update, product), product: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      assert %{
+        "amount" => ["must be greater than or equal to 0"],
+        "barcode" => ["has invalid format"],
+        "description" => ["is invalid"],
+        "name" => ["can't be blank"],
+        "price" => ["must be greater than 0"],
+        "sku" => ["has invalid format"]
+      } == json_response(conn, 422)["errors"]
     end
   end
 
