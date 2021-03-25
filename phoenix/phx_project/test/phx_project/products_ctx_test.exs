@@ -61,19 +61,20 @@ defmodule PhxProject.ProductsCtxTest do
 
     test "create_product/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{} = changeset} = ProductsCtx.create_product(@invalid_attrs)
-      assert changeset.errors == [barcode: {"has invalid format", [validation: :format]},
-                                  sku: {"has invalid format", [validation: :format]},
-                                  amount: {"must be greater than or equal to %{number}", [validation: :number, number: 0]},
-                                  price: {"must be greater than %{number}", [validation: :number, number: 0]},
-                                  name: {"can't be blank", [validation: :required]},
-                                  description: {"is invalid", [type: :string, validation: :cast]}]
+      assert "has invalid format" in errors_on(changeset).barcode
+      assert "has invalid format" in errors_on(changeset).sku
+      assert "must be greater than or equal to 0" in errors_on(changeset).amount
+      assert "must be greater than 0" in errors_on(changeset).price
+      assert "can't be blank" in errors_on(changeset).name
+      assert "is invalid" in errors_on(changeset).description
     end
 
     test "create_product/1 returns error for existing sku and barcode" do
       product_fixture()
 
       assert {:error, %Ecto.Changeset{} = changeset} = ProductsCtx.create_product(@valid_attrs)
-      assert changeset.errors == [barcode: {"barcode already exists", []}, sku: {"sku already exists", []}]
+      assert "barcode already exists" in errors_on(changeset).barcode
+      assert "sku already exists" in errors_on(changeset).sku
     end
 
     test "update_product/2 with valid data updates the product" do
