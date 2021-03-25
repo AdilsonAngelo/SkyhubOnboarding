@@ -76,6 +76,17 @@ defmodule PhxProjectWeb.ProductControllerTest do
         }
       } == json_response(conn, 422)
     end
+
+    test "renders errors when sku or barcode already exists", %{conn: conn} do
+      fixture(:product)
+      conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
+
+      assert %{"errors" => %{
+          "barcode" => ["barcode already exists"],
+          "sku" => ["sku already exists"]
+        }
+      } == json_response(conn, 422)
+    end
   end
 
   describe "update product" do
