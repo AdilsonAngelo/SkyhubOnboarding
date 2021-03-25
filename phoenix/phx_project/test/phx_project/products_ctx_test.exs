@@ -69,6 +69,13 @@ defmodule PhxProject.ProductsCtxTest do
                                   description: {"is invalid", [type: :string, validation: :cast]}]
     end
 
+    test "create_product/1 returns error for existing sku and barcode" do
+      product_fixture()
+
+      assert {:error, %Ecto.Changeset{} = changeset} = ProductsCtx.create_product(@valid_attrs)
+      assert changeset.errors == [barcode: {"barcode already exists", []}, sku: {"sku already exists", []}]
+    end
+
     test "update_product/2 with valid data updates the product" do
       product = product_fixture()
       assert {:ok, %Product{} = product} = ProductsCtx.update_product(product, @update_attrs)
