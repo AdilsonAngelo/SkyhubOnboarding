@@ -5,20 +5,29 @@ defmodule PhxProjectWeb.ProductControllerTest do
   alias PhxProject.ProductsCtx.Product
 
   @create_attrs %{
-    amount: 42,
-    description: "some description",
-    name: "some name",
-    price: 120.5,
-    sku: "some sku"
+    sku: "AA-111",
+    name: "foo",
+    barcode: "00100100",
+    description: nil,
+    price: nil,
+    amount: nil
   }
   @update_attrs %{
-    amount: 43,
-    description: "some updated description",
-    name: "some updated name",
+    sku: "A1B234",
+    name: "Foo",
+    barcode: "00200200200",
+    description: "Bar",
     price: 456.7,
-    sku: "some updated sku"
+    amount: 43,
   }
-  @invalid_attrs %{amount: nil, description: nil, name: nil, price: nil, sku: nil}
+  @invalid_attrs %{
+    sku: "Invalid Format",
+    name: nil,
+    barcode: "Not Numbers",
+    description: 123,
+    price: 0,
+    amount: -1,
+  }
 
   def fixture(:product) do
     {:ok, product} = ProductsCtx.create_product(@create_attrs)
@@ -32,25 +41,26 @@ defmodule PhxProjectWeb.ProductControllerTest do
   describe "index" do
     test "lists all products", %{conn: conn} do
       conn = get(conn, Routes.product_path(conn, :index))
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
   describe "create product" do
     test "renders product when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.product_path(conn, :create), product: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get(conn, Routes.product_path(conn, :show, id))
 
       assert %{
                "id" => id,
-               "amount" => 42,
-               "description" => "some description",
-               "name" => "some name",
-               "price" => 120.5,
-               "sku" => "some sku"
-             } = json_response(conn, 200)["data"]
+               "sku" => "AA-111",
+               "name" => "foo",
+               "barcode" => "00100100",
+               "description" => nil,
+               "price" => nil,
+               "amount" => nil,
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -64,18 +74,18 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
     test "renders product when data is valid", %{conn: conn, product: %Product{id: id} = product} do
       conn = put(conn, Routes.product_path(conn, :update, product), product: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get(conn, Routes.product_path(conn, :show, id))
 
       assert %{
                "id" => id,
-               "amount" => 43,
-               "description" => "some updated description",
-               "name" => "some updated name",
+               "sku" => "A1B234",
+               "name" => "Foo",
+               "description" => "Bar",
                "price" => 456.7,
-               "sku" => "some updated sku"
-             } = json_response(conn, 200)["data"]
+               "amount" => 43,
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn, product: product} do
