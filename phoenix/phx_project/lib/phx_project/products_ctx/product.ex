@@ -18,7 +18,7 @@ defmodule PhxProject.ProductsCtx.Product do
     field :sku, :string
     field :barcode, :string
 
-    timestamps()
+    timestamps(usec: false)
   end
 
   def changeset(product, attrs) do
@@ -27,8 +27,8 @@ defmodule PhxProject.ProductsCtx.Product do
     |> validate_required(@required_attrs)
     |> validate_number(:price, greater_than: 0)
     |> validate_number(:amount, greater_than_or_equal_to: 0)
-    |> validate_format(:sku, ~r/^[A-Z\d]{6}$/i)
-    |> validate_format(:barcode, ~r/\d{8,13}/)
+    |> validate_format(:sku, ~r/^[A-Z\d-]{6}$/i)
+    |> validate_format(:barcode, ~r/^\d{8,13}$/)
     |> validate_unique(:sku)
     |> validate_unique(:barcode)
   end

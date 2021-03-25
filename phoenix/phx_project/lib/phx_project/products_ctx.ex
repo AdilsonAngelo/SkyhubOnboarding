@@ -107,9 +107,10 @@ defmodule PhxProject.ProductsCtx do
       Product
       |> select([p], count(p.id, :distinct))
       |> where([p], field(p, ^attr) == ^val)
-      case Repo.one(query) do
-        nil -> false
-        1 -> true
-      end
+
+    case Repo.one(query) do
+      nil -> false
+      1 -> true
     end
   end
+end
