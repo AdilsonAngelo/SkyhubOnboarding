@@ -3,6 +3,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
+  alias PhxProject.Utils.RedisHelper
 
   @create_attrs %{
     sku: "AA-111",
@@ -73,6 +74,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
         id: id,
         sku: "AA-111",
         name: "foo",
+        barcode: "00100100",
         description: nil,
         price: nil,
         amount: nil,
@@ -125,6 +127,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
         id: id,
         sku: "A1B234",
         name: "Foo",
+        barcode: "00200200200",
         description: "Bar",
         price: 456.7,
         amount: 43,
@@ -157,8 +160,58 @@ defmodule PhxProjectWeb.ProductControllerTest do
     end
   end
 
+  describe "redis" do
+    test "cache on creation", %{conn: conn} do
+      conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
+      product = json_response(conn, 201)
+
+      assert map_to_product(@create_attrs, [{:id, product["id"]}]) == RedisHelper.get(product["id"], %Product{})
+    end
+
+    test "cache on show", %{conn: conn} do
+      {:ok, product} = PhxProject.ProductsCtx.create_product(@create_attrs)
+
+      assert :undefined == RedisHelper.get(product.id, %Product{})
+
+      get(conn, Routes.product_path(conn, :show, product.id))
+
+      assert map_to_product(@create_attrs, [{:id, product.id}]) == RedisHelper.get(product.id, %Product{})
+    end
+
+    test "cache on update", %{conn: conn} do
+      {:ok, product} = PhxProject.ProductsCtx.create_product(@create_attrs)
+
+      assert :undefined == RedisHelper.get(product.id, %Product{})
+
+      conn = put(conn, Routes.product_path(conn, :update, product), product: @update_attrs)
+
+      assert map_to_product(@update_attrs, [{:id, product.id}]) == RedisHelper.get(product.id, %Product{})
+    end
+
+    test "clear cache on delete", %{conn: conn} do
+      conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
+      product = json_response(conn, 201)
+
+      check_product = map_to_product(@create_attrs, [{:id, product["id"]}])
+
+      assert check_product == RedisHelper.get(check_product.id, %Product{})
+
+      conn = delete(conn, Routes.product_path(conn, :delete, check_product))
+      assert response(conn, 204)
+
+      assert :undefined == RedisHelper.get(check_product.id, %Product{})
+    end
+  end
+
   defp create_product(_) do
     product = fixture(:product)
     %{product: product}
+  end
+
+  defp map_to_product(map, other_items \\ []) do
+    opts = Enum.map(map, fn {k, v} -> {k, v} end)
+    opts = opts ++ other_items
+
+    struct(Product, opts)
   end
 end
