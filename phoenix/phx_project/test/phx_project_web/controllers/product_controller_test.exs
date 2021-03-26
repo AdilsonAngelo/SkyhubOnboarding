@@ -46,8 +46,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
       product =
         Map.merge(@create_attrs, %{id: id})
-        |> Enum.map(fn {k, v} -> {Atom.to_string(k), v} end)
-        |> Enum.into(%{})
+        |> Map.new(fn {k, v} -> {Atom.to_string(k), v} end)
 
       conn = get(conn, Routes.product_path(conn, :index))
       assert json_response(conn, 200) == [product]
