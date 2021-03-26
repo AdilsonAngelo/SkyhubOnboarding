@@ -4,6 +4,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.Utils.RedisHelper
+  alias PhxProject.Utils.ESHelper
 
   @create_attrs %{
     sku: "AA-111",
@@ -200,6 +201,55 @@ defmodule PhxProjectWeb.ProductControllerTest do
       assert response(conn, 204)
 
       assert :undefined == RedisHelper.get(check_product.id, %Product{})
+    end
+  end
+
+  describe "elasticsearch log" do
+    setup [:create_product]
+
+    test "on GET /products", %{conn: conn} do
+      conn = get(conn, Routes.product_path(conn, :index))
+      {_, log} =
+        conn
+        |> ESHelper.conn_to_log()
+        |> Map.pop(:created_at)
+      assert log = ESHelper.get_log(conn, :products)
+    end
+
+    test "on GET /products/:id", %{conn: conn, product: product} do
+      conn = get(conn, Routes.product_path(conn, :show, product.id))
+      {_, log} =
+        conn
+        |> ESHelper.conn_to_log()
+        |> Map.pop(:created_at)
+      assert log = ESHelper.get_log(conn, :products)
+    end
+
+    test "on POST /products", %{conn: conn} do
+      conn = post(conn, Routes.product_path(conn, :create), @create_attrs)
+      {_, log} =
+        conn
+        |> ESHelper.conn_to_log()
+        |> Map.pop(:created_at)
+      assert log = ESHelper.get_log(conn, :products)
+    end
+
+    test "on PUT|PATCH /products/:id", %{conn: conn, product: product} do
+      conn = put(conn, Routes.product_path(conn, :update, product), product: @update_attrs)
+      {_, log} =
+        conn
+        |> ESHelper.conn_to_log()
+        |> Map.pop(:created_at)
+      assert log = ESHelper.get_log(conn, :products)
+    end
+
+    test "on DELETE /products/:id", %{conn: conn, product: product} do
+      conn = delete(conn, Routes.product_path(conn, :delete, product))
+      {_, log} =
+        conn
+        |> ESHelper.conn_to_log()
+        |> Map.pop(:created_at)
+      assert log = ESHelper.get_log(conn, :products)
     end
   end
 
