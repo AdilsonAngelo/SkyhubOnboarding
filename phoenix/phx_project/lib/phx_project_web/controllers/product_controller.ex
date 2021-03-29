@@ -1,14 +1,13 @@
 defmodule PhxProjectWeb.ProductController do
   use PhxProjectWeb, :controller
 
-  alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
 
   action_fallback PhxProjectWeb.FallbackController
 
   def index(conn, _params) do
-    products = ProductsCtx.list_products()
+    products = ProductData.list()
     render(conn, "index.json", products: products)
   end
 
@@ -45,5 +44,9 @@ defmodule PhxProjectWeb.ProductController do
       conn
       |> send_resp(:no_content, "")
     end
+  end
+
+  def report(conn, _params) do
+    render(conn, "index.json", products: ProductData.list())
   end
 end
