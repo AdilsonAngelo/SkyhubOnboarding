@@ -16,6 +16,7 @@ defmodule PhxProjectWeb.ProductView do
       price: product.price,
       name: product.name,
       description: product.description,
-      amount: product.amount}
+      amount: product.amount,
+      barcode: product.barcode}
   end
 end

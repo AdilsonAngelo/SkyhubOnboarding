@@ -29,10 +29,8 @@ defmodule PhxProjectWeb.ChannelCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(PhxProject.Repo)
-
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(PhxProject.Repo, {:shared, self()})
+      Mongo.Ecto.truncate(PhxProject.Repo, [])
     end
 
     :ok
