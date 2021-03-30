@@ -2,9 +2,9 @@ defmodule PhxProject.ProductsCtxTest do
   use PhxProject.DataCase
 
   alias PhxProject.ProductsCtx
+  alias PhxProject.ProductsCtx.Product
 
   describe "products" do
-    alias PhxProject.ProductsCtx.Product
     @valid_attrs %{
       sku: "AA-111",
       name: "foo",
@@ -105,4 +105,36 @@ defmodule PhxProject.ProductsCtxTest do
       assert %Ecto.Changeset{} = ProductsCtx.change_product(product)
     end
   end
+
+  describe "product report" do
+    alias ProductsCtx.ProductReport
+    def seed_fixture() do
+      [
+        %{sku: "AA-111", name: "foo", barcode: "00100100", description: nil, price: 120.5, amount: 0},
+        %{sku: "AA-112", name: "Foo", barcode: "00200200", description: "Bar", price: nil, amount: nil},
+        %{sku: "AA-113", name: "Bar", barcode: "00300300", description: "Foo", price: 1.5, amount: 2}
+      ]
+      |> Enum.map(fn p ->
+        {:ok, product} = ProductsCtx.create_product(p)
+        product
+      end)
+    end
+
+    def remove_meta(%Product{} = product) do
+      {_, res} = product
+      |> Map.from_struct()
+      |> Map.pop(:__meta__)
+      res
+    end
+
+    test "generate_report/0 stores all products correctly" do
+      products = seed_fixture()
+
+      {:ok, report_path} = ProductReport.generate_report()
+      report_products = ProductReport.read_report(report_path)
+
+      assert Enum.map(products, &remove_meta/1) == Enum.map(report_products, &remove_meta/1)
+    end
+  end
+
 end

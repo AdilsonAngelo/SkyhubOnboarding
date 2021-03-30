@@ -45,7 +45,8 @@ defmodule PhxProject.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:exredis, "~> 0.3.0"},
       {:poison, "~> 3.0"},
-      {:tirexs, "~> 0.8"}
+      {:tirexs, "~> 0.8"},
+      {:csv, "~> 2.4"}
     ]
   end
 

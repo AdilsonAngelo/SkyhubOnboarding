@@ -42,4 +42,6 @@ defmodule PhxProject.ProductsCtx.Product do
       end
     end)
   end
+
+  def get_attrs(), do: @all_attrs
 end
