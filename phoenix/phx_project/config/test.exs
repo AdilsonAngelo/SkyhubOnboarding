@@ -22,6 +22,16 @@ config :exredis,
 
 config :tirexs, :uri, "http://0.0.0.0:9200"
 
+
+config :task_bunny, hosts: [
+  default: [connect_options: "amqp://0.0.0.0?heartbeat=30"]
+]
+
+config :task_bunny, queue: [
+  namespace: "phx_project_test.",
+  queues: [[name: "products", jobs: :default]]
+]
+
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
 config :phx_project, PhxProjectWeb.Endpoint,

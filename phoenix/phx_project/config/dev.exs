@@ -39,6 +39,15 @@ config :phx_project, PhxProjectWeb.Endpoint,
     ]
   ]
 
+config :task_bunny, hosts: [
+  default: [connect_options: "amqp://rabbitmq?heartbeat=30"]
+]
+
+config :task_bunny, queue: [
+  namespace: "phx_project_dev.",
+  queues: [[name: "products", jobs: :default]]
+]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
