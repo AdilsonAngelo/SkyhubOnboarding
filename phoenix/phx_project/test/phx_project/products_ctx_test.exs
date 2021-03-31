@@ -120,20 +120,18 @@ defmodule PhxProject.ProductsCtxTest do
       end)
     end
 
-    def remove_meta(%Product{} = product) do
-      {_, res} = product
-      |> Map.from_struct()
-      |> Map.pop(:__meta__)
-      res
-    end
-
-    test "generate_report/0 stores all products correctly" do
+    test "generate_report/1 stores all products correctly" do
       products = seed_fixture()
 
       {:ok, report_path} = ProductReport.generate_report()
       report_products = ProductReport.read_report(report_path)
 
-      assert Enum.map(products, &remove_meta/1) == Enum.map(report_products, &remove_meta/1)
+      assert Enum.zip(products, report_products)
+        |> Enum.map(fn {prod1, prod2} ->
+          changeset = Product.changeset(prod1, Map.from_struct(prod2))
+          changeset.changes == %{}
+        end)
+        |> Enum.all?()
     end
   end
 

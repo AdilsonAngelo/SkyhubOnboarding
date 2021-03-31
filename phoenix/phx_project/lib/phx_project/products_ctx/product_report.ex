@@ -1,13 +1,18 @@
 defmodule PhxProject.ProductsCtx.ProductReport do
+  use TaskBunny.Job
+
   import Ecto.Changeset
 
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
 
-  @headers [:id, :inserted_at, :updated_at] ++ Product.get_attrs()
+  @headers [:id | Product.get_attrs()] ++ [:inserted_at, :updated_at]
+  @prefix "#{File.cwd!}/data/"
 
-  def generate_report() do
-    filepath = gen_filepath()
+  def perform(%{"id" => id} \\ %{"id" => Ecto.UUID.generate()}), do: generate_report(id)
+
+  def generate_report(id \\ Ecto.UUID.generate()) do
+    filepath = gen_filepath(id)
     file = File.open!(filepath, [:write, :utf8])
 
     CSV.encode([@headers], delimiter: "\n")
@@ -30,20 +35,21 @@ defmodule PhxProject.ProductsCtx.ProductReport do
     tail
   end
 
-  def product_to_csv_row(%Product{} = p) do
+  def get_reports_dir(), do: @prefix
+
+  defp product_to_csv_row(%Product{} = p) do
     Enum.map(@headers, fn field -> Map.get(p, field) end)
   end
 
-  def csv_row_to_product(row) do
+  defp csv_row_to_product(row) do
     cast(%Product{}, row, @headers)
     |> apply_changes()
   end
 
-  defp gen_filepath() do
-    prefix = "#{File.cwd!}/data/"
-    File.mkdir_p!(prefix)
+  defp gen_filepath(id) do
+    File.mkdir_p!(@prefix)
 
-    prefix <> "product_report_#{get_timestamp()}.csv"
+    @prefix <> "product_report_#{id}_#{get_timestamp()}.csv"
   end
 
   defp get_timestamp(datetime \\ DateTime.utc_now()) do
