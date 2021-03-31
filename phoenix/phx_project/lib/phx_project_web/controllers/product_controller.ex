@@ -3,6 +3,7 @@ defmodule PhxProjectWeb.ProductController do
 
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
+  alias PhxProject.ProductsCtx.ProductReport
 
   action_fallback PhxProjectWeb.FallbackController
 
@@ -47,6 +48,11 @@ defmodule PhxProjectWeb.ProductController do
   end
 
   def report(conn, _params) do
-    render(conn, "index.json", products: ProductData.list())
+    id = Ecto.UUID.generate()
+    :ok = ProductReport.enqueue!(%{id: id})
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(:ok, Poison.encode!(%{request_id: id, message: "Queueing request"}))
   end
 end
