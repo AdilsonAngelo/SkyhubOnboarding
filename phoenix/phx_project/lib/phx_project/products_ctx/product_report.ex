@@ -38,7 +38,7 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   def get_reports_dir(), do: @prefix
 
   defp product_to_csv_row(%Product{} = p) do
-    Enum.map(@headers, fn field -> Map.get(p, field) end)
+    Enum.map(@headers, &Map.get(p, &1))
   end
 
   defp csv_row_to_product(row) do

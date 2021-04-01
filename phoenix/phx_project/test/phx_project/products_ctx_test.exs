@@ -3,6 +3,7 @@ defmodule PhxProject.ProductsCtxTest do
 
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
+  alias PhxProject.ProductsCtx.ProductReport
 
   describe "products" do
     @valid_attrs %{
@@ -107,7 +108,6 @@ defmodule PhxProject.ProductsCtxTest do
   end
 
   describe "product report" do
-    alias ProductsCtx.ProductReport
     def seed_fixture() do
       [
         %{sku: "AA-111", name: "foo", barcode: "00100100", description: nil, price: 120.5, amount: 0},
@@ -120,9 +120,11 @@ defmodule PhxProject.ProductsCtxTest do
       end)
     end
 
-    test "generate_report/1 stores all products correctly" do
-      products = seed_fixture()
+    setup do
+      [products: seed_fixture()]
+    end
 
+    test "generate_report/1 stores all products correctly", %{products: products} do
       {:ok, report_path} = ProductReport.generate_report()
       report_products = ProductReport.read_report(report_path)
 
