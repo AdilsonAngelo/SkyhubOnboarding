@@ -29,7 +29,7 @@ config :task_bunny, hosts: [
 
 config :task_bunny, queue: [
   namespace: "phx_project_test.",
-  queues: [[name: "products", jobs: :default]]
+  queues: [[name: "products", jobs: :default, worker: false]]
 ]
 
 # We don't run a server during test. If one is required,
