@@ -7,7 +7,7 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   alias PhxProject.ProductsCtx.ProductData
 
   @headers [:id | Product.get_attrs()] ++ [:inserted_at, :updated_at]
-  @prefix "#{File.cwd!}/data/"
+  @prefix "#{File.cwd!}/priv/static/csv/"
 
   def perform(%{"id" => id} \\ %{"id" => Ecto.UUID.generate()}), do: generate_report(id)
 
@@ -53,6 +53,6 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   end
 
   defp get_timestamp(datetime \\ DateTime.utc_now()) do
-    "#{DateTime.to_iso8601(datetime)}"
+    "#{DateTime.to_unix(datetime)}"
   end
 end
