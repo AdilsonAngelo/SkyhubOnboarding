@@ -257,7 +257,17 @@ defmodule PhxProjectWeb.ProductControllerTest do
     setup [:create_product]
 
     test "enqueue on GET /products/report", %{conn: conn} do
+      q_config = Application.get_env(:task_bunny, :queue)
+      queue_name = q_config[:namespace] <> "products"
+
+      %{message_count: msgs_before} = TaskBunny.Queue.state(:default, queue_name)
+
       conn = get(conn, Routes.product_path(conn, :report))
+
+      %{message_count: msgs_after} = TaskBunny.Queue.state(:default, queue_name)
+
+      assert msgs_before < msgs_after
+
       assert %{
         "request_id" => id,
         "message" => "Queueing request"

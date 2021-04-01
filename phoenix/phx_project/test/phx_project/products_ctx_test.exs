@@ -135,6 +135,19 @@ defmodule PhxProject.ProductsCtxTest do
         end)
         |> Enum.all?()
     end
+
+    test "ProductReport.enqueue!/2 enqueues a report task" do
+      q_config = Application.get_env(:task_bunny, :queue)
+      queue_name = q_config[:namespace] <> "products"
+
+      %{message_count: msgs_before} = TaskBunny.Queue.state(:default, queue_name)
+
+      ProductReport.enqueue!(nil)
+
+      %{message_count: msgs_after} = TaskBunny.Queue.state(:default, queue_name)
+
+      assert msgs_before < msgs_after
+    end
   end
 
 end
