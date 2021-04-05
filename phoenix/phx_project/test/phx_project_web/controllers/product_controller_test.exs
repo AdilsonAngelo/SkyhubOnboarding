@@ -270,7 +270,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
       assert %{
         "request_id" => id,
-        "message" => "Queueing request"
+        "report_filename" => report_filename
       } = json_response(conn, 200)
     end
   end

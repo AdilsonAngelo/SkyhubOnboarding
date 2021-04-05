@@ -53,6 +53,6 @@ defmodule PhxProjectWeb.ProductController do
 
     conn
     |> put_resp_content_type("application/json")
-    |> send_resp(:ok, Poison.encode!(%{request_id: id, message: "Queueing request"}))
+    |> send_resp(:ok, Poison.encode!(%{request_id: id, report_filename: ProductReport.gen_filepath(id)}))
   end
 end

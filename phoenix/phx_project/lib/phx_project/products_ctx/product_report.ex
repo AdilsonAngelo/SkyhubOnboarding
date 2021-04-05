@@ -37,6 +37,12 @@ defmodule PhxProject.ProductsCtx.ProductReport do
 
   def get_reports_dir(), do: @prefix
 
+  def gen_filepath(id) do
+    File.mkdir_p!(@prefix)
+
+    @prefix <> "product_report_#{id}.csv"
+  end
+
   defp product_to_csv_row(%Product{} = p) do
     Enum.map(@headers, &Map.get(p, &1))
   end
@@ -44,15 +50,5 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   defp csv_row_to_product(row) do
     cast(%Product{}, row, @headers)
     |> apply_changes()
-  end
-
-  defp gen_filepath(id) do
-    File.mkdir_p!(@prefix)
-
-    @prefix <> "product_report_#{id}_#{get_timestamp()}.csv"
-  end
-
-  defp get_timestamp(datetime \\ DateTime.utc_now()) do
-    "#{DateTime.to_unix(datetime)}"
   end
 end
