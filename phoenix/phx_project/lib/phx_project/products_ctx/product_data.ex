@@ -3,6 +3,8 @@ defmodule PhxProject.ProductsCtx.ProductData do
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.Utils.RedisHelper
 
+  def list(), do: ProductsCtx.list_products()
+
   def get(id) do
     with :undefined <- RedisHelper.get(id, %Product{}) do
       ProductsCtx.get_product!(id)

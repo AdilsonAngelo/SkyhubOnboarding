@@ -2,9 +2,10 @@ defmodule PhxProject.ProductsCtxTest do
   use PhxProject.DataCase
 
   alias PhxProject.ProductsCtx
+  alias PhxProject.ProductsCtx.Product
+  alias PhxProject.ProductsCtx.ProductReport
 
   describe "products" do
-    alias PhxProject.ProductsCtx.Product
     @valid_attrs %{
       sku: "AA-111",
       name: "foo",
@@ -105,4 +106,48 @@ defmodule PhxProject.ProductsCtxTest do
       assert %Ecto.Changeset{} = ProductsCtx.change_product(product)
     end
   end
+
+  describe "product report" do
+    def seed_fixture() do
+      [
+        %{sku: "AA-111", name: "foo", barcode: "00100100", description: nil, price: 120.5, amount: 0},
+        %{sku: "AA-112", name: "Foo", barcode: "00200200", description: "Bar", price: nil, amount: nil},
+        %{sku: "AA-113", name: "Bar", barcode: "00300300", description: "Foo", price: 1.5, amount: 2}
+      ]
+      |> Enum.map(fn p ->
+        {:ok, product} = ProductsCtx.create_product(p)
+        product
+      end)
+    end
+
+    setup do
+      [products: seed_fixture()]
+    end
+
+    test "generate_report/1 stores all products correctly", %{products: products} do
+      {:ok, report_path} = ProductReport.generate_report()
+      report_products = ProductReport.read_report(report_path)
+
+      assert Enum.zip(products, report_products)
+        |> Enum.map(fn {prod1, prod2} ->
+          changeset = Product.changeset(prod1, Map.from_struct(prod2))
+          changeset.changes == %{}
+        end)
+        |> Enum.all?()
+    end
+
+    test "ProductReport.enqueue!/2 enqueues a report task" do
+      q_config = Application.get_env(:task_bunny, :queue)
+      queue_name = q_config[:namespace] <> "products"
+
+      %{message_count: msgs_before} = TaskBunny.Queue.state(:default, queue_name)
+
+      ProductReport.enqueue!(nil)
+
+      %{message_count: msgs_after} = TaskBunny.Queue.state(:default, queue_name)
+
+      assert msgs_before < msgs_after
+    end
+  end
+
 end

@@ -1,14 +1,14 @@
 defmodule PhxProjectWeb.ProductController do
   use PhxProjectWeb, :controller
 
-  alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
+  alias PhxProject.ProductsCtx.ProductReport
 
   action_fallback PhxProjectWeb.FallbackController
 
   def index(conn, _params) do
-    products = ProductsCtx.list_products()
+    products = ProductData.list()
     render(conn, "index.json", products: products)
   end
 
@@ -45,5 +45,14 @@ defmodule PhxProjectWeb.ProductController do
       conn
       |> send_resp(:no_content, "")
     end
+  end
+
+  def report(conn, _params) do
+    id = Ecto.UUID.generate()
+    :ok = ProductReport.enqueue!(%{id: id})
+
+    conn
+    |> put_resp_content_type("application/json")
+    |> send_resp(:ok, Poison.encode!(%{request_id: id, report_filename: ProductReport.gen_filepath(id)}))
   end
 end

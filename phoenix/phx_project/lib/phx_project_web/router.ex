@@ -18,6 +18,7 @@ defmodule PhxProjectWeb.Router do
 
   scope "/api", PhxProjectWeb do
     pipe_through :api
+    get "/products/report", ProductController, :report
     resources "/products", ProductController
   end
 

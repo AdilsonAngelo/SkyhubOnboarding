@@ -9,6 +9,7 @@ services:
       - mongo
       - redis
       - elasticsearch
+      - rabbitmq
     volumes:
       - ./phx_project:/app
   mongo:
@@ -49,6 +50,14 @@ services:
       - elasticsearch
     ports:
       - 5601:5601
+  rabbitmq:
+    image: rabbitmq:3.6.16-management
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
+    ports:
+        - 5672:5672
+        - 15672:15672
 
 volumes:
   esdata:

@@ -3,6 +3,7 @@ defmodule PhxProjectWeb.ProductControllerTest do
 
   alias PhxProject.ProductsCtx
   alias PhxProject.ProductsCtx.Product
+  alias PhxProject.ProductsCtx.ProductReport
   alias PhxProject.Utils.RedisHelper
   alias PhxProject.Utils.ESHelper
 
@@ -249,6 +250,28 @@ defmodule PhxProjectWeb.ProductControllerTest do
         |> ESHelper.conn_to_log()
         |> Map.pop(:created_at)
       assert log = ESHelper.get_log(conn, :products)
+    end
+  end
+
+  describe "reports:" do
+    setup [:create_product]
+
+    test "enqueue on GET /products/report", %{conn: conn} do
+      q_config = Application.get_env(:task_bunny, :queue)
+      queue_name = q_config[:namespace] <> "products"
+
+      %{message_count: msgs_before} = TaskBunny.Queue.state(:default, queue_name)
+
+      conn = get(conn, Routes.product_path(conn, :report))
+
+      %{message_count: msgs_after} = TaskBunny.Queue.state(:default, queue_name)
+
+      assert msgs_before < msgs_after
+
+      assert %{
+        "request_id" => id,
+        "report_filename" => report_filename
+      } = json_response(conn, 200)
     end
   end
 
