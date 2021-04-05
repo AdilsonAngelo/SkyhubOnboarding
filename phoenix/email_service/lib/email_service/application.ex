@@ -8,7 +8,7 @@ defmodule EmailService.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      EmailService.Repo,
+      # EmailService.Repo,
       # Start the Telemetry supervisor
       EmailServiceWeb.Telemetry,
       # Start the PubSub system

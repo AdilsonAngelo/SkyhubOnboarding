@@ -7,8 +7,8 @@
 # General application configuration
 use Mix.Config
 
-config :email_service,
-  ecto_repos: [EmailService.Repo]
+# config :email_service,
+#   ecto_repos: [EmailService.Repo]
 
 # Configures the endpoint
 config :email_service, EmailServiceWeb.Endpoint,

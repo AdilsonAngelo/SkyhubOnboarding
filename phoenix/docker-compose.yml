@@ -58,6 +58,14 @@ services:
     ports:
         - 5672:5672
         - 15672:15672
+  email_service:
+    build: email_service
+    ports:
+      - 5000:4000
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./email_service:/app
 
 volumes:
   esdata:

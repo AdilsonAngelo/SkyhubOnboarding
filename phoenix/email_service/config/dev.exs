@@ -1,14 +1,5 @@
 use Mix.Config
 
-# Configure your database
-config :email_service, EmailService.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "email_service_dev",
-  hostname: "localhost",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
@@ -21,6 +12,11 @@ config :email_service, EmailServiceWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: []
+
+
+config :email_service, EmailService.Mailer,
+  adapter: Bamboo.LocalAdapter,
+  open_email_in_browser_url: "http://localhost:4000/sent_emails"
 
 # ## SSL Support
 #
