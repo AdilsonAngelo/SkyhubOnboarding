@@ -1,5 +1,11 @@
 defmodule EmailServiceWeb.Router do
   use EmailServiceWeb, :router
+  use Plug.ErrorHandler
+
+  def handle_errors(%Plug.Conn{} = conn, %{kind: kind, reason: reason, stack: stack}) do
+    response = %{reason: reason, kind: kind, stack: Exception.format_stacktrace(stack)}
+    send_resp(conn, conn.status, Poison.encode!(response))
+  end
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -7,6 +13,7 @@ defmodule EmailServiceWeb.Router do
 
   scope "/api", EmailServiceWeb do
     pipe_through :api
+    post "/send-email", EmailController, :send_email
   end
 
   # Enables LiveDashboard only for development
