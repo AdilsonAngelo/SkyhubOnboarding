@@ -12,7 +12,7 @@ use Mix.Config
 
 # Configures the endpoint
 config :email_service, EmailServiceWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "0.0.0.0"],
   secret_key_base: "WBUkY9D9OLz28zXE+KiVxUKdnZLXDHGnS+BAUoP5HL2Xm90vTw4+JPSqfpVNtbXe",
   render_errors: [view: EmailServiceWeb.ErrorView, accepts: ~w(json), layout: false],
   pubsub_server: EmailService.PubSub,

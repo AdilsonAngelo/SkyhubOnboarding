@@ -7,16 +7,14 @@ use Mix.Config
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
 config :email_service, EmailServiceWeb.Endpoint,
-  http: [port: 4000],
+  http: [port: 5000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: []
 
 
-config :email_service, EmailService.MailCtx.Mailer,
-  adapter: Bamboo.LocalAdapter,
-  open_email_in_browser_url: "http://0.0.0.0:4000/sent_emails"
+config :email_service, EmailService.MailCtx.Mailer, adapter: Bamboo.LocalAdapter
 
 # ## SSL Support
 #

@@ -14,3 +14,5 @@ config :email_service, EmailServiceWeb.Endpoint,
 
 # Print only warnings and errors during test
 config :logger, level: :warn
+
+config :email_service, EmailService.MailCtx.Mailer, adapter: Bamboo.TestAdapter
