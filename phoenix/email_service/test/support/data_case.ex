@@ -28,11 +28,11 @@ defmodule EmailService.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(EmailService.Repo)
+    # :ok = Ecto.Adapters.SQL.Sandbox.checkout(EmailService.Repo)
 
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(EmailService.Repo, {:shared, self()})
-    end
+    # unless tags[:async] do
+    #   Ecto.Adapters.SQL.Sandbox.mode(EmailService.Repo, {:shared, self()})
+    # end
 
     :ok
   end
