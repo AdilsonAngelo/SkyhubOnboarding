@@ -61,10 +61,12 @@ services:
   emailservice:
     build: email_service
     ports:
-      - 5000:4000
+      - 5000:5000
     volumes:
       - ./email_service:/app
 
 volumes:
   esdata:
+    driver: local
+  emaildata:
     driver: local
