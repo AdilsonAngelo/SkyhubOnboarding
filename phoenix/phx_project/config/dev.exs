@@ -39,6 +39,10 @@ config :phx_project, PhxProjectWeb.Endpoint,
     ]
   ]
 
+
+config :phx_project,
+  email_service_address: [host: "emailservice", port: 5000]
+
 config :task_bunny, hosts: [
   default: [connect_options: "amqp://rabbitmq?heartbeat=30"]
 ]

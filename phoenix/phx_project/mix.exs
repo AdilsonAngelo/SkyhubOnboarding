@@ -20,7 +20,15 @@ defmodule PhxProject.MixProject do
   def application do
     [
       mod: {PhxProject.Application, []},
-      extra_applications: [:logger, :runtime_tools, :mongodb_ecto, :ecto, :tirexs, :task_bunny]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :mongodb_ecto,
+        :ecto,
+        :tirexs,
+        :task_bunny,
+        :httpoison
+      ]
     ]
   end
 
@@ -47,7 +55,8 @@ defmodule PhxProject.MixProject do
       {:poison, "~> 3.0"},
       {:tirexs, "~> 0.8"},
       {:csv, "~> 2.4"},
-      {:task_bunny, "~> 0.3.4"}
+      {:task_bunny, "~> 0.3.4"},
+      {:httpoison, "~> 1.7"},
     ]
   end
 

@@ -29,10 +29,39 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   end
 
   def read_report(filepath) do
-    [_ | tail] = File.stream!(filepath)
-    |> CSV.decode!(headers: @headers)
-    |> Enum.map(&csv_row_to_product/1)
+    [_ | tail] =
+      File.stream!(filepath)
+      |> CSV.decode!(headers: @headers)
+      |> Enum.map(&csv_row_to_product/1)
+
     tail
+  end
+
+  def send_email(filepath, email_address) do
+    url =
+      Application.get_env(:phx_project, :email_service_address)
+      |> (fn [host: host, port: port] ->
+        "#{host}:#{port}/api/send-email/"
+      end).()
+
+    body = Poison.encode!(%{
+      to: email_address,
+      from: "noreply@onboarding.com",
+      subject: "[ REPORT ] #{Path.basename(filepath)}",
+      body: "Here is your report",
+      attachments: [
+        %{filename: Path.basename(filepath), content: File.read!(filepath)}
+      ]
+    })
+
+    headers = [{"content-type", "application/json"}]
+
+    case HTTPoison.post!(url, body, headers) do
+      %{status_code: 204} ->
+        {:ok, 204, nil}
+      res ->
+        {:error, res.status_code, res.body}
+    end
   end
 
   def get_reports_dir(), do: @prefix
