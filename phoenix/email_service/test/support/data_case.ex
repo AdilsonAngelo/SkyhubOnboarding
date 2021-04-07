@@ -27,7 +27,7 @@ defmodule EmailService.DataCase do
     end
   end
 
-  setup tags do
+  setup do
     # :ok = Ecto.Adapters.SQL.Sandbox.checkout(EmailService.Repo)
 
     # unless tags[:async] do
