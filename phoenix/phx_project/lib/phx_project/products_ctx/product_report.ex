@@ -6,13 +6,15 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   alias PhxProject.ProductsCtx.Product
   alias PhxProject.ProductsCtx.ProductData
 
+  require Logger
+
   @headers [:id | Product.get_attrs()] ++ [:inserted_at, :updated_at]
   @prefix "#{File.cwd!}/priv/static/csv/"
 
-  def perform(%{"id" => id} \\ %{"id" => Ecto.UUID.generate()}), do: generate_report(id)
+  def perform(%{} = args \\ %{}), do: generate_report(args)
 
-  def generate_report(id \\ Ecto.UUID.generate()) do
-    filepath = gen_filepath(id)
+  def generate_report(%{} = args \\ %{}) do
+    filepath = gen_filepath(Map.get(args, "id", Ecto.UUID.generate()))
     file = File.open!(filepath, [:write, :utf8])
 
     CSV.encode([@headers], delimiter: "\n")
@@ -24,6 +26,13 @@ defmodule PhxProject.ProductsCtx.ProductReport do
     |> Enum.each(&IO.write(file, &1))
 
     File.close(file)
+
+    email_to = Map.get(args, "email_to")
+    unless email_to == nil do
+      with {:error, status, body} <- send_email(filepath, email_to) do
+        Logger.error("Error delivering report email:\n\tstatus code: #{status}\n\tbody: #{body}")
+      end
+    end
 
     {:ok, filepath}
   end
