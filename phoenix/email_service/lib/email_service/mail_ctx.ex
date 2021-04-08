@@ -11,9 +11,9 @@ defmodule EmailService.MailCtx do
     changeset = Email.changeset(%Email{}, params)
 
     case changeset.valid? do
-      :true ->
+      true ->
         Ecto.Changeset.apply_changes(changeset)
-      :false ->
+      false ->
         {:error, changeset}
     end
   end
@@ -28,8 +28,8 @@ defmodule EmailService.MailCtx do
 
     email.attachments
     |> Enum.map(&convert_attachment/1)
-    |> Enum.reduce(new, fn x, acc ->
-      put_attachment(acc, x)
+    |> Enum.reduce(new, fn attachment, acc ->
+      put_attachment(acc, attachment)
     end)
   end
 

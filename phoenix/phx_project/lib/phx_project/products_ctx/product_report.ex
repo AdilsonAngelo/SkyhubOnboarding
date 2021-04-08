@@ -28,7 +28,7 @@ defmodule PhxProject.ProductsCtx.ProductReport do
     File.close(file)
 
     email_to = Map.get(args, "email_to")
-    unless email_to == nil do
+    if email_to do
       with {:error, status, body} <- send_email(filepath, email_to) do
         Logger.error("Error delivering report email:\n\tstatus code: #{status}\n\tbody: #{body}")
       end
@@ -47,11 +47,7 @@ defmodule PhxProject.ProductsCtx.ProductReport do
   end
 
   def send_email(filepath, email_address) do
-    url =
-      Application.get_env(:phx_project, :email_service_address)
-      |> (fn [host: host, port: port] ->
-        "#{host}:#{port}/api/send-email/"
-      end).()
+    url = get_email_service_url()
 
     body = Poison.encode!(%{
       to: email_address,
@@ -79,6 +75,11 @@ defmodule PhxProject.ProductsCtx.ProductReport do
     File.mkdir_p!(@prefix)
 
     @prefix <> "product_report_#{id}.csv"
+  end
+
+  defp get_email_service_url() do
+    [host: host, port: port] = Application.get_env(:phx_project, :email_service_address)
+    "#{host}:#{port}/api/send-email/"
   end
 
   defp product_to_csv_row(%Product{} = p) do
