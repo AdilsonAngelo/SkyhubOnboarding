@@ -148,6 +148,12 @@ defmodule PhxProject.ProductsCtxTest do
 
       assert msgs_before < msgs_after
     end
+
+    test "ProductReport.send_email/2 sends email with report", %{products: products} do
+      {:ok, report_path} = ProductReport.generate_report()
+
+      assert {:ok, 204, _} = ProductReport.send_email(report_path, "test@onboarding.com")
+    end
   end
 
 end

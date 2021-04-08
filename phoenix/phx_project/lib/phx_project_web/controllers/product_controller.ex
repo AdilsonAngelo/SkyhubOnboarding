@@ -47,9 +47,12 @@ defmodule PhxProjectWeb.ProductController do
     end
   end
 
-  def report(conn, _params) do
+  def report(%Plug.Conn{} = conn, _params) do
     id = Ecto.UUID.generate()
-    :ok = ProductReport.enqueue!(%{id: id})
+    :ok = ProductReport.enqueue!(
+      %{id: id,
+        email_to: Map.get(conn.query_params, "email_to")}
+    )
 
     conn
     |> put_resp_content_type("application/json")

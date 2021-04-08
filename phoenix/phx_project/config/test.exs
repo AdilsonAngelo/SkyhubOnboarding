@@ -12,6 +12,9 @@ config :phx_project, PhxProject.Repo,
   pool_size: 1
 
 
+config :phx_project,
+  email_service_address: [host: "0.0.0.0", port: 5000]
+
 config :exredis,
   host: "0.0.0.0",
   port: 6379,

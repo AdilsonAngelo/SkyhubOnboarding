@@ -1,56 +1,20 @@
 use Mix.Config
 
-# Configure your database
-config :phx_project, PhxProject.Repo,
-  database: "phx_project_dev",
-  hostname: "mongo",
-  show_sensitive_data_on_connection_error: true,
-  pool_size: 10
-
-config :exredis,
-  host: "redis",
-  port: 6379,
-  password: "",
-  db: 0,
-  reconnect: :no_reconnect,
-  max_queue: :infinity
-
-
-config :tirexs, :uri, "http://elasticsearch:9200"
-
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :phx_project, PhxProjectWeb.Endpoint,
-  http: [port: 4000],
-  debug_errors: false,
+config :email_service, EmailServiceWeb.Endpoint,
+  http: [port: 5000],
+  debug_errors: true,
   code_reloader: true,
   check_origin: false,
-  watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
-  ]
+  watchers: []
 
 
-config :phx_project,
-  email_service_address: [host: "emailservice", port: 5000]
-
-config :task_bunny, hosts: [
-  default: [connect_options: "amqp://rabbitmq?heartbeat=30"]
-]
-
-config :task_bunny, queue: [
-  namespace: "phx_project_dev.",
-  queues: [[name: "products", jobs: :default]]
-]
+config :email_service, EmailService.MailCtx.Mailer, adapter: Bamboo.LocalAdapter
 
 # ## SSL Support
 #

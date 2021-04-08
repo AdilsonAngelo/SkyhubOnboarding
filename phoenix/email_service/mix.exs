@@ -1,9 +1,9 @@
-defmodule PhxProject.MixProject do
+defmodule EmailService.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :phx_project,
+      app: :email_service,
       version: "0.1.0",
       elixir: "~> 1.7",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,16 +19,8 @@ defmodule PhxProject.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {PhxProject.Application, []},
-      extra_applications: [
-        :logger,
-        :runtime_tools,
-        :mongodb_ecto,
-        :ecto,
-        :tirexs,
-        :task_bunny,
-        :httpoison
-      ]
+      mod: {EmailService.Application, []},
+      extra_applications: [:logger, :runtime_tools, :bamboo]
     ]
   end
 
@@ -43,20 +35,13 @@ defmodule PhxProject.MixProject do
     [
       {:phoenix, "~> 1.5.0"},
       {:phoenix_ecto, "~> 4.1"},
-      {:ecto, "~> 2.1.6", override: true},
-      {:mongodb_ecto, "~> 0.2.1"},
       {:phoenix_live_dashboard, "~> 0.2.0"},
       {:telemetry_metrics, "~> 0.4"},
       {:telemetry_poller, "~> 0.4"},
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:exredis, "~> 0.3.0"},
-      {:poison, "~> 3.0"},
-      {:tirexs, "~> 0.8"},
-      {:csv, "~> 2.4"},
-      {:task_bunny, "~> 0.3.4"},
-      {:httpoison, "~> 1.7"},
+      {:bamboo, "~> 1.0.0"}
     ]
   end
 
@@ -68,7 +53,7 @@ defmodule PhxProject.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "cmd npm install --prefix assets"],
+      setup: ["deps.get", "ecto.setup"],
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["test"]
