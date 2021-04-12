@@ -57,6 +57,7 @@ defmodule PhxProject.MixProject do
       {:csv, "~> 2.4"},
       {:task_bunny, "~> 0.3.4"},
       {:httpoison, "~> 1.7"},
+      {:sentry, "~> 8.0"}
     ]
   end
 

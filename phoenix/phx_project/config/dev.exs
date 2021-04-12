@@ -18,6 +18,17 @@ config :exredis,
 
 config :tirexs, :uri, "http://elasticsearch:9200"
 
+
+config :sentry,
+  dsn: "https://dcc96cd98c0744ba80fe25cb0c23918e@o568167.ingest.sentry.io/5712966",
+  environment_name: :dev,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    env: "development"
+  },
+  included_environments: [:dev]
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #

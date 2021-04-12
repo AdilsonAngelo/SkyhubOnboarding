@@ -19,7 +19,8 @@ config :phx_project, PhxProjectWeb.Endpoint,
   live_view: [signing_salt: "C+hvFcSj"]
 
 # Configures Elixir's Logger
-config :logger, :console,
+config :logger,
+  backends: [:console, Sentry.LoggerBackend],
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
