@@ -24,6 +24,10 @@ config :logger,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :new_relic_agent,
+  app_name: "Skyhub Onboarding",
+  license_key: System.get_env("NEW_RELIC_LICENSE_KEY")
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
