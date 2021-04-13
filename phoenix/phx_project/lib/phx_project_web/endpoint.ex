@@ -1,4 +1,5 @@
 defmodule PhxProjectWeb.Endpoint do
+  use Sentry.PlugCapture
   use Phoenix.Endpoint, otp_app: :phx_project
 
   # The session will be stored in the cookie and signed,
@@ -32,6 +33,12 @@ defmodule PhxProjectWeb.Endpoint do
     plug Phoenix.CodeReloader
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :phx_project
   end
+
+  plug Plug.Parsers,
+    parsers: [:urlencoded, :multipart, :json],
+    pass: ["*/*"],
+    json_decoder: Phoenix.json_library()
+  plug Sentry.PlugContext
 
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",

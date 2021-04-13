@@ -13,6 +13,16 @@ config :phx_project, PhxProjectWeb.Endpoint,
   url: [host: "example.com", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
 
+config :sentry,
+  dsn: "https://dcc96cd98c0744ba80fe25cb0c23918e@o568167.ingest.sentry.io/5712966",
+  environment_name: :prod,
+  enable_source_code_context: true,
+  root_source_code_path: File.cwd!(),
+  tags: %{
+    env: "production"
+  },
+  included_environments: [:prod]
+
 # Do not print debug messages in production
 config :logger, level: :info
 
